@@ -1,12 +1,8 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 ## Install and load libraries
 .libPaths("c:/temp/rpackages")
 suppressWarnings({
@@ -29,27 +25,45 @@ activity <- as.data.table(activity)
 ```
 
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 complete_activity <- activity[complete.cases(activity),]
 steps_per_day = aggregate(. ~ date, data = activity, FUN=sum)[,c("date", "steps")]
 ggplot(steps_per_day, aes(x=date, weights=steps)) + geom_histogram(aes(fill = ..count..),binwidth = 1) + scale_fill_gradient(high="green", low="red")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 average_steps_per_day = list(mean = mean(steps_per_day$steps),
                              median = median(steps_per_day$steps))
 average_steps_per_day
 ```
 
+```
+## $mean
+## [1] 10766.19
+## 
+## $median
+## [1] 10765
+```
+
 
 
 ## What is the average daily activity pattern?
-```{r}
+
+```r
 steps_per_interval = aggregate(. ~ interval, data = activity, FUN=mean)[,c("interval", "steps")]
 plot(y=steps_per_interval$steps, x=steps_per_interval$interval, type='l',
      ylab = "Steps per 5min interval", xlab = "Minute of day", main="Average Step Count by Time of Day", col = "red")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 best_interval <- steps_per_interval[which.max(steps_per_interval$steps),]
 ```
-The best time of day interval is `r best_interval$interval` with `r best_interval$steps` steps on average.
+The best interval (on average) is 835 with 206.1698113 steps.
 
 ## Imputing missing values
 
