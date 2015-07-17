@@ -74,7 +74,7 @@ plot(y=steps_per_interval$steps, x=steps_per_interval$interval, type='l',
 ```r
 best_interval <- steps_per_interval[which.max(steps_per_interval$steps),]
 ```
-The best time of day interval is 835 with 206.1698113 steps on average.
+The best time of day interval is 835 with 206 steps on average.
 
 ## Imputing missing values
 
@@ -117,3 +117,67 @@ imputed_average_steps_per_day
 The mean values between the observed data and imputed data are the same.  The median value of the imputed data is the same as the mean.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+*Note:* This section uses imputed data.
+
+
+```r
+imputed_steps_per_interval_by_day_of_week <- function(days){
+  aggregate(. ~ interval,
+            data = activity[weekdays(activity$DateTime) %in% days,],
+            FUN=mean)[,c("interval", "imputed_steps")]
+}
+
+# Weekend
+weekend_steps_per_interval <- imputed_steps_per_interval_by_day_of_week(
+  c('Saturday','Sunday'))
+weekend_best_interval <- weekend_steps_per_interval[which.max(weekend_steps_per_interval$imputed_steps),]
+
+# Weekday
+weekday_steps_per_interval <- imputed_steps_per_interval_by_day_of_week(
+  c('Monday','Tuesday',"Wednesday","Thursday","Friday"))
+
+weekday_best_interval <- weekday_steps_per_interval[which.max(weekday_steps_per_interval$imputed_steps),]
+
+# Plot 
+par(mfrow = c(2, 1), mar = c(4,4,2,1), oma = c(0,0,2,0))
+
+plot(y=weekend_steps_per_interval$imputed_steps, x=weekend_steps_per_interval$interval, type='l',
+     ylab = "Steps per 5min", xlab = "",
+     main="Weekend", col = "red")
+
+plot(y=weekday_steps_per_interval$imputed_steps, x=weekday_steps_per_interval$interval, type='l',
+     ylab = "Steps per 5min", xlab = "Minute of day",
+     main="Weekday", col = "blue")
+```
+
+![](PA1_template_files/figure-html/weekday_vs_weekend_activity-1.png) 
+
+The best weekend time of day interval is 915 with 175 steps on average.
+
+The best weekday time of day interval is 835 with 234 steps on average.
+
+Here the charts are overlaid:
+
+
+```r
+plot(y=weekday_steps_per_interval$imputed_steps, x=weekday_steps_per_interval$interval,
+     ylab = "Steps per 5min interval", xlab = "Minute of day",
+     main="Weekday vs. Weekend",
+     type='l', col = "blue")
+
+lines(y=weekend_steps_per_interval$imputed_steps, x=weekend_steps_per_interval$interval,
+      type='l', col = "red")
+
+legend("topleft",
+       legend=c("Weekday","Weekend"),
+       col = c("Blue","Red"),
+       bty = "n",
+       pch = "_")
+```
+
+![](PA1_template_files/figure-html/weekday_overlaid_weekend_activity-1.png) 
+
+## Summary
+
+From these images, we can infer that the individual rises 2-3 hours earlier on the weekdays than the weekend and often stays active later into the evening on the weekends.
