@@ -37,12 +37,19 @@ activity[,"DateTime"] <-
 
 ```r
 steps_per_day = aggregate(. ~ date, data = activity, FUN=sum)[,c("date", "steps")]
+
 ggplot(steps_per_day, aes(x=date, weights=steps)) +
   geom_histogram(aes(fill = ..count..),binwidth = 1) +
   scale_fill_gradient(high="green", low="red")
 ```
 
 ![](PA1_template_files/figure-html/steps_per_day-1.png) 
+
+```r
+hist(steps_per_day$steps, col="green", main = "Steps per day")
+```
+
+![](PA1_template_files/figure-html/steps_per_day-2.png) 
 
 ```r
 average_steps_per_day = list(mean = mean(steps_per_day$steps),
@@ -93,12 +100,19 @@ for(i in 1:nrow(activity)){
 }
 
 imputed_steps_per_day = aggregate(. ~ date, data = activity[,c("date", "imputed_steps")], FUN=sum)[,c("date", "imputed_steps")]
+
 ggplot(imputed_steps_per_day, aes(x=date, weights=imputed_steps)) +
   geom_histogram(aes(fill = ..count..),binwidth = 1) +
   scale_fill_gradient(high="green", low="red")
 ```
 
 ![](PA1_template_files/figure-html/imputed_steps_per_day-1.png) 
+
+```r
+hist(imputed_steps_per_day$imputed_steps, col="green", main = "Imputed Steps per day")
+```
+
+![](PA1_template_files/figure-html/imputed_steps_per_day-2.png) 
 
 ```r
 imputed_average_steps_per_day = list(mean = mean(imputed_steps_per_day$imputed_steps),
